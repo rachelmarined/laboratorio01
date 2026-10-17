@@ -1,3 +1,5 @@
+package lab01;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -172,8 +174,8 @@ public class Main extends JFrame {
             b.setBackground(VERDE);
         } else {
             b.add(new JLabel(t.getNombre(), SwingConstants.CENTER));
-            b.add(new JLabel(dinero(t.getMontof()), SwingConstants.CENTER));
-            b.setBackground(t.isPalindromo() ? AMARILLO : ROJO);
+            b.add(new JLabel(dinero(t.getmontop()), SwingConstants.CENTER));
+            b.setBackground(t.palindromo() ? AMARILLO : ROJO);
         }
         b.revalidate();
         b.repaint();
@@ -192,7 +194,7 @@ public class Main extends JFrame {
             return 0;
         }
         Ticket t = vuelo.getSeat(i);
-        return (t != null && t.isPalindromo() ? 1 : 0) + contarPalindromos(i + 1);
+        return (t != null && t.palindromo() ? 1 : 0) + contarPalindromos(i + 1);
     }
 
     private String leerNombre() {
@@ -215,8 +217,8 @@ public class Main extends JFrame {
         String respuesta = vuelo.sellTicket(nombre);
         Ticket t = (libre == -1) ? null : vuelo.getSeat(libre);
         if (t != null) {
-            String texto = "Vendido: " + t.getNombre() + " en " + codigo(libre) + ", pagó " + dinero(t.getMontof());
-            if (t.isPalindromo()) {
+            String texto = "Vendido: " + t.getNombre() + " en " + codigo(libre) + ", pagó " + dinero(t.getmontop());
+            if (t.palindromo()) {
                 texto += " (palíndromo, 20% de descuento)";
             }
             mostrar(texto);
@@ -233,7 +235,7 @@ public class Main extends JFrame {
             return;
         }
         int pos = vuelo.searchPassenger(nombre, 0);
-        double reembolso = (pos == -1) ? 0 : vuelo.getSeat(pos).getMontof();
+        double reembolso = (pos == -1) ? 0 : vuelo.getSeat(pos).getmontop();
         if (vuelo.cancelTicket(nombre)) {
             mostrar("Cancelado: " + nombre + ". Reembolso de " + dinero(reembolso));
             campoNombre.setText("");
