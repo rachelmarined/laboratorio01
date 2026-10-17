@@ -84,7 +84,7 @@ public class Main extends JFrame {
         b.setLayout(new GridLayout(3, 1));
         b.setFocusPainted(false);
         b.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        b.addActionListener(e -> verDetalle(i));
+        b.addActionListener(e -> clicAsiento(i));
         asientos[i] = b;
         grid.add(b);
         crearAsientos(i + 1, grid);
@@ -115,7 +115,8 @@ public class Main extends JFrame {
                         + "Capacidad: " + ASIENTOS + " asientos\n\n"
                         + "Atajos y ayudas:\n"
                         + "- Enter = Sell Ticket\n"
-                        + "- Clic en asiento = ver detalle\n"
+                        + "- Clic en asiento libre = vender ahí\n"
+                        + "- Clic en asiento ocupado = ver detalle\n"
                         + "- Dispatch pide confirmación");
         info.setEditable(false);
         info.setBorder(borde("Información"));
@@ -215,18 +216,36 @@ public class Main extends JFrame {
         }
         int libre = vuelo.firstAvailable(0);
         String respuesta = vuelo.sellTicket(nombre);
-        Ticket t = (libre == -1) ? null : vuelo.getSeat(libre);
-        if (t != null) {
-            String texto = "Vendido: " + t.getNombre() + " en " + codigo(libre) + ", pagó " + dinero(t.getmontop());
-            if (t.palindromo()) {
-                texto += " (palíndromo, 20% de descuento)";
-            }
-            mostrar(texto);
-            campoNombre.setText("");
+        if (libre != -1 && vuelo.getSeat(libre) != null) {
+            mostrarVenta(libre);
         } else {
             mostrar(respuesta);
         }
         actualizar();
+    }
+
+    private void venderEnAsiento(int i) {
+        String nombre = leerNombre();
+        if (nombre == null) {
+            return;
+        }
+        String respuesta = vuelo.sellTicket(nombre, i);
+        if (vuelo.getSeat(i) != null) {
+            mostrarVenta(i);
+        } else {
+            mostrar(respuesta);
+        }
+        actualizar();
+    }
+
+    private void mostrarVenta(int i) {
+        Ticket t = vuelo.getSeat(i);
+        String texto = "Vendido: " + t.getNombre() + " en " + codigo(i) + ", pagó " + dinero(t.getmontop());
+        if (t.palindromo()) {
+            texto += " (palíndromo, 20% de descuento)";
+        }
+        mostrar(texto);
+        campoNombre.setText("");
     }
 
     private void cancelar() {
@@ -280,12 +299,14 @@ public class Main extends JFrame {
         }
     }
 
-    private void verDetalle(int i) {
+    private void clicAsiento(int i) {
         Ticket t = vuelo.getSeat(i);
-        if (t == null) {
-            mostrar("El asiento " + codigo(i) + " está libre.");
-        } else {
+        if (t != null) {
             JOptionPane.showMessageDialog(this, "Asiento: " + codigo(i) + "\n" + t.print());
+        } else if (campoNombre.getText().trim().isEmpty()) {
+            mostrar("El asiento " + codigo(i) + " está libre. Escriba un nombre y haga clic para venderlo ahí.");
+        } else {
+            venderEnAsiento(i);
         }
     }
 

@@ -80,14 +80,24 @@ public class paliair {
     }
 
     public String sellTicket(String name) {
-        double monto = 1000;
-        double descuento;
-        double montof;
-        boolean palindromo = isPalindromo(name);
         int asiento = firstAvailable(0);
         if (asiento == -1) {
             return "El avion esta lleno, no se puede vender el ticket";
         }
+        return sellTicket(name, asiento);
+    }
+
+    public String sellTicket(String name, int asiento) {
+        if (asiento < 0 || asiento >= asientos.length) {
+            return "Ese asiento no existe";
+        }
+        if (asientos[asiento] != null) {
+            return "Ese asiento ya esta ocupado";
+        }
+        double monto = 1000;
+        double descuento;
+        double montof;
+        boolean palindromo = isPalindromo(name);
         if (palindromo) {
             descuento = monto * 0.20;
         } else {
