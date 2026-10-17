@@ -33,5 +33,22 @@ public class Ticket {
     public boolean palindromo(){
         return palindromo;
     }
-    
+    public String print (){
+        String texto = "Pasajero:"+ nombre +"\n";
+        texto+= "monto original:"+montoog+"\n";
+        texto +="monto pagado"+montop+"\n";
+
+            if (palindromo) {
+        texto += "Si aplica descuento!";
+    } else {
+        texto += "No aplica descuento";
+    }
+        return texto;
+    }
+        
 }
+        
+    
+    
+    
+
